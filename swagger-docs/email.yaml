@@ -1,0 +1,21 @@
+# Email module: it has no HTTP endpoints of its own. Emails are sent automatically by
+# the other modules. This tag documents which actions trigger which notification.
+tags:
+  - name: Email Notifications
+    description: |
+      The email module sends notifications automatically; it has no endpoints of its own.
+
+      | Trigger | Email sent |
+      |---|---|
+      | `POST /auth/register` | Welcome email with a verification link (valid 24h) |
+      | `POST /auth/resend-verification` | New verification link (valid 24h) |
+      | `POST /auth/forgot-password` | Password reset link (valid 1h) |
+      | `POST /auth/reset-password` | Password changed confirmation |
+      | `POST /auth/change-password` | Password changed confirmation |
+      | `POST /properties` | Listing published confirmation |
+      | `DELETE /properties/{id}` | Listing removed notification |
+
+      Links in emails point to `CLIENT_URL` (e.g. `CLIENT_URL/verify-email?token=...`).
+      Your frontend should read the `token` from the URL and call the matching API endpoint.
+
+      Set `EMAIL_ENABLED=false` in `.env` to print emails to the console instead of sending them.
