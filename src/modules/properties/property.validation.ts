@@ -5,7 +5,7 @@ const LISTING_TYPES = ['SALE', 'RENT'] as const;
 const PROPERTY_STATUSES = ['AVAILABLE', 'PENDING', 'SOLD', 'RENTED'] as const;
 
 export const propertyIdParamSchema = z.object({
-  id: z.string().regex(/^[a-f\d]{24}$/i, 'Invalid property ID'),
+  id: z.uuid('Invalid property ID'),
 });
 
 const addressSchema = z.object({
@@ -19,7 +19,8 @@ const addressSchema = z.object({
 const propertyFields = {
   title: z.string().trim().min(5, 'Title must be at least 5 characters').max(150),
   description: z.string().trim().min(20, 'Description must be at least 20 characters').max(5000),
-  price: z.number().positive('Price must be greater than 0'),
+  // Stored as DECIMAL(14, 2)
+  price: z.number().positive('Price must be greater than 0').max(999_999_999_999.99, 'Price is too large'),
   currency: z.string().trim().length(3, 'Currency must be a 3-letter ISO code').toUpperCase(),
   propertyType: z.enum(PROPERTY_TYPES),
   listingType: z.enum(LISTING_TYPES),

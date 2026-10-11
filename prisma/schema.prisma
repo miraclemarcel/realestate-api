@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -36,17 +36,17 @@ enum PropertyStatus {
 }
 
 model User {
-  id                      String     @id @default(auto()) @map("_id") @db.ObjectId
-  firstName               String
-  lastName                String
+  id                      String     @id @default(uuid()) @db.Uuid
+  firstName               String     @db.VarChar(50)
+  lastName                String     @db.VarChar(50)
   email                   String     @unique
   password                String
-  phone                   String?
+  phone                   String?    @db.VarChar(20)
   role                    Role       @default(USER)
   isEmailVerified         Boolean    @default(false)
-  emailVerificationToken  String?
+  emailVerificationToken  String?    @unique
   emailVerificationExpiry DateTime?
-  passwordResetToken      String?
+  passwordResetToken      String?    @unique
   passwordResetExpiry     DateTime?
   refreshToken            String?
   properties              Property[]
@@ -56,20 +56,12 @@ model User {
   @@map("users")
 }
 
-type Address {
-  street  String
-  city    String
-  state   String
-  country String
-  zipCode String?
-}
-
 model Property {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  title        String
+  id           String         @id @default(uuid()) @db.Uuid
+  title        String         @db.VarChar(150)
   description  String
-  price        Float
-  currency     String         @default("USD")
+  price        Decimal        @db.Decimal(14, 2)
+  currency     String         @default("USD") @db.Char(3)
   propertyType PropertyType
   listingType  ListingType
   status       PropertyStatus @default(AVAILABLE)
@@ -77,18 +69,30 @@ model Property {
   bathrooms    Int            @default(0)
   areaSqft     Float?
   yearBuilt    Int?
-  address      Address
-  latitude     Float?
-  longitude    Float?
-  amenities    String[]
-  images       String[]
-  isFeatured   Boolean        @default(false)
-  ownerId      String         @db.ObjectId
-  owner        User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+
+  // Address (returned to clients as a nested `address` object)
+  street  String  @db.VarChar(200)
+  city    String  @db.VarChar(100)
+  state   String  @db.VarChar(100)
+  country String  @db.VarChar(100)
+  zipCode String? @db.VarChar(20)
+
+  latitude   Float?
+  longitude  Float?
+  amenities  String[]
+  images     String[]
+  isFeatured Boolean  @default(false)
+
+  ownerId String @db.Uuid
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([ownerId])
   @@index([listingType, propertyType, status])
+  @@index([city])
+  @@index([price])
+  @@index([createdAt])
   @@map("properties")
 }

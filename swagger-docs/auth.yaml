@@ -10,7 +10,8 @@ components:
       properties:
         id:
           type: string
-          example: 6710c3f2a1b2c3d4e5f60718
+          format: uuid
+          example: 3f8a2c1e-7b4d-4e9a-9c2f-1a5b6d7e8f90
         firstName:
           type: string
           example: Jane

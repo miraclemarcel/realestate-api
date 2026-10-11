@@ -10,11 +10,11 @@ components:
       name: id
       in: path
       required: true
-      description: Property ID (24-character MongoDB ObjectId)
+      description: Property ID (UUID)
       schema:
         type: string
-        pattern: '^[a-fA-F0-9]{24}$'
-        example: 6710c3f2a1b2c3d4e5f60719
+        format: uuid
+        example: b7e4d2a9-3c1f-4a8e-8d6b-2f9c0e1a4b57
     Page:
       name: page
       in: query
@@ -149,7 +149,8 @@ components:
       properties:
         id:
           type: string
-          example: 6710c3f2a1b2c3d4e5f60718
+          format: uuid
+          example: 3f8a2c1e-7b4d-4e9a-9c2f-1a5b6d7e8f90
         firstName:
           type: string
           example: Jane
@@ -171,7 +172,7 @@ components:
       properties:
         id:
           type: string
-          example: 6710c3f2a1b2c3d4e5f60719
+          example: b7e4d2a9-3c1f-4a8e-8d6b-2f9c0e1a4b57
         title:
           type: string
           example: Modern 3-bedroom apartment in Lekki
@@ -180,6 +181,7 @@ components:
           example: Spacious, fully furnished apartment with ocean views, 24/7 power and security.
         price:
           type: number
+          description: Stored as DECIMAL(14, 2); returned as a number
           example: 250000
         currency:
           type: string
@@ -230,7 +232,8 @@ components:
           example: false
         ownerId:
           type: string
-          example: 6710c3f2a1b2c3d4e5f60718
+          format: uuid
+          example: 3f8a2c1e-7b4d-4e9a-9c2f-1a5b6d7e8f90
         owner:
           $ref: '#/components/schemas/PropertyOwner'
         createdAt:

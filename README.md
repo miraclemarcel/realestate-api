@@ -1,13 +1,14 @@
 # Real Estate Listing API
 
-REST API for listing and managing real estate properties, built with **TypeScript**, **Node.js (Express 5)**, **Prisma** and **MongoDB**, secured with **JWT**, and documented with **Swagger (OpenAPI 3)**.
+REST API for listing and managing real estate properties, built with **TypeScript**, **Node.js (Express 5)**, **Prisma** and **PostgreSQL**, secured with **JWT**, and documented with **Swagger (OpenAPI 3)**.
 
 ## Project structure
 
 ```
 realestate-api/
 ├── prisma/
-│   └── schema.prisma            # User & Property models (MongoDB)
+│   └── schema.prisma            # User & Property models (PostgreSQL)
+│   └── migrations/              # SQL migrations
 ├── swagger-docs/                # All Swagger/OpenAPI docs, one file per module
 │   ├── components.yaml          # Shared schemas, responses, JWT security scheme
 │   ├── auth.yaml                # Auth module endpoints
@@ -25,8 +26,7 @@ realestate-api/
 │   ├── routes.ts                # Mounts module routers under /api/v1
 │   ├── app.ts                   # Express app
 │   └── server.ts                # Entry point
-├── .env.example
-└── docker-compose.yml           # Local MongoDB replica set
+└── .env.example
 ```
 
 ## Getting started
@@ -49,17 +49,15 @@ Then edit `.env` and set at least `DATABASE_URL`, `JWT_ACCESS_SECRET` and `JWT_R
 node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
 
-### 3. Start MongoDB
+### 3. Start PostgreSQL
 
-Prisma needs MongoDB to run as a **replica set**. You can either:
+Install PostgreSQL locally (https://www.postgresql.org/download/) and create a database called `realestate`, or use a hosted PostgreSQL (Neon, Supabase, RDS…). Put the connection string in `DATABASE_URL`.
 
-- use **MongoDB Atlas** (replica set by default) and paste its connection string into `DATABASE_URL`, or
-- run it locally with Docker: `docker compose up -d` (matches the default `DATABASE_URL` in `.env.example`).
-
-### 4. Sync the schema (creates collections and indexes)
+### 4. Run the migrations (creates the tables)
 
 ```bash
-npm run prisma:push
+npm run prisma:migrate   # development: applies migrations, creates new ones after schema changes
+npm run prisma:deploy    # production: applies existing migrations only
 ```
 
 ### 5. Run

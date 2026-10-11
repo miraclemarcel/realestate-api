@@ -1,7 +1,7 @@
 {
   "name": "realestate-api",
   "version": "1.0.0",
-  "description": "Real estate listing API built with TypeScript, Express, Prisma and MongoDB",
+  "description": "Real estate listing API built with TypeScript, Express, Prisma and PostgreSQL",
   "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
@@ -10,7 +10,9 @@
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
     "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:reset": "prisma migrate reset",
     "prisma:studio": "prisma studio",
     "postinstall": "prisma generate"
   },
@@ -19,7 +21,7 @@
     "api",
     "express",
     "prisma",
-    "mongodb",
+    "postgresql",
     "swagger"
   ],
   "license": "MIT",
